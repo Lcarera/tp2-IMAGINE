@@ -8,10 +8,7 @@
 #include "ppm.h"
 
 
-unsigned char truncate_pixel(float color)
-{ 
-    return (color > 255) ? 255 : ((color < 0) ? 0: (unsigned char)color); 
-}
+
 
 //init with default values
 void ppm::init(int _width, int _height) {

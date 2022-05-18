@@ -12,7 +12,10 @@
 using namespace std;
 
 // COMPLETAR :)
-
+unsigned char truncate_pixel(float color)
+{ 
+    return (color > 255) ? 255 : ((color < 0) ? 0: (unsigned char)color); 
+}
 // Filtro plano como ejemplo
 
 void plain(ppm& img, unsigned char c)
