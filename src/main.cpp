@@ -23,6 +23,14 @@ int main(int argc , char* argv[]){
 		cout << "Uso: ./main <filtro> <nthreads> <[p1]> <img1> <custom_output> <[p2]> <img2>" << endl;
 		return 0; 
 	}
+	if(string(argv[1]) == "-filtros"){
+		cout << "shades" << endl;
+		cout << "merge" << endl;
+		cout << "brightness" << endl;
+		cout << "boxblur" << endl;
+		cout << "crop" << endl;
+		cout << "zoom" << endl;
+	}
 	
 	string filter = string(argv[1]);
 	unsigned int n = atoi(argv[2]);
