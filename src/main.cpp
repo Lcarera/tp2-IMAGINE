@@ -37,17 +37,22 @@ int main(int argc , char* argv[]){
 	float p1 = atof(argv[3]);
 	string img1(argv[4]);
 	string out = string(argv[5]);
-	
-	ppm img(img1);
-	
+	float p2 = atof(argv[6]);
+	string img2(argv[7]);
+
+	ppm imagen1(img1);
+	ppm imagen2(img2);
 	cout << "Aplicando filtros"<< endl;
 	struct timespec start, stop;    	
 	clock_gettime(CLOCK_REALTIME, &start);
 
 	if (filter == "plain")
-		plain(img, (unsigned char)p1);
+		plain(imagen1, (unsigned char)p1);
 	if (filter == "shades")
-		shades(img, (unsigned char)p1);
+		shades(imagen1, (unsigned char)p1);
+	if (filter == "merge")
+		merge(imagen1, imagen2, p1);
+
    	clock_gettime(CLOCK_REALTIME, &stop);
 
 	double accum;
@@ -55,7 +60,7 @@ int main(int argc , char* argv[]){
 	printf("%lf s\n", accum);
 
 	cout << "Escribiendo imagen" << endl;
-	img.write(out);	
+	imagen1.write(out);	
 	    
 	cout << "Listo" << endl;
 	return 0;
