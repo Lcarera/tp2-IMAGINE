@@ -40,3 +40,26 @@ void shades(ppm& img, unsigned char shades)
 		}				
 	}
 }
+
+void merge(ppm& img1, ppm& img2, float alpha)
+{
+	float alpha2 = 1 - alpha;
+	int r;
+	int g;
+	int b;
+
+
+	for(int i = 0; i < img1.height; i++)
+		for(int j = 0; j < img1.width; j++)
+		{
+			img1.getPixel(i, j);
+			img2.getPixel(i,j);
+
+			r = truncate_pixel(img1.getPixel(i,j).r * alpha + img2.getPixel(i,j).r * alpha2);
+			g = truncate_pixel(img1.getPixel(i,j).g * alpha + img2.getPixel(i,j).g * alpha2);
+			b = truncate_pixel(img1.getPixel(i,j).b * alpha + img2.getPixel(i,j).b * alpha2);
+			img1.setPixel(i,j, pixel(r,g,b));
+			
+		}			
+			
+}
