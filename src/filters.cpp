@@ -79,7 +79,7 @@ void merge(ppm& img1, ppm& img2, float alpha)
 			
 }
 
-void brightness(ppm& img, float brillo, int start, int end)
+void brightness(ppm& img, float brillo)
 {
 	int r;
 	int g;
