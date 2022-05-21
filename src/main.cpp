@@ -52,6 +52,8 @@ int main(int argc , char* argv[]){
 		shades(imagen1, (unsigned char)p1);
 	if (filter == "merge")
 		merge(imagen1, imagen2, p1);
+	if (filter == "brightness")
+		brightness(imagen1, p1, -1,1);
 
    	clock_gettime(CLOCK_REALTIME, &stop);
 
