@@ -79,7 +79,7 @@ void merge(ppm& img1, ppm& img2, float alpha)
 			
 }
 
-void brightness(ppm& img, float brillo, int start, int end)
+void brightness(ppm& img, float brillo)
 {
 	int r;
 	int g;
@@ -111,4 +111,20 @@ void brightness(ppm& img, float brillo, int start, int end)
 		cout << error << endl;
 	}
 	
+}
+
+void crop(ppm& img, int filas, int columnas)
+{
+	int r;
+	int g;
+	int b;
+
+	ppm nuevaImg = ppm(img.height - filas, img.width - columnas);
+	for(int i = filas; i < img.height; i++)
+	{
+		for(int j = columnas; j < img.width; j++)
+		{
+			nuevaImg.setPixel(i - filas,j - columnas, pixel(r,g,b));				
+		}
+	}
 }

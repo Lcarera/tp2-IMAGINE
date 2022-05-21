@@ -53,8 +53,9 @@ int main(int argc , char* argv[]){
 	if (filter == "merge")
 		merge(imagen1, imagen2, p1);
 	if (filter == "brightness")
-		brightness(imagen1, p1, -1,1);
-
+		brightness(imagen1, p1);
+	if (filter == "crop")
+		crop(imagen1, p1, p2);
    	clock_gettime(CLOCK_REALTIME, &stop);
 
 	double accum;
