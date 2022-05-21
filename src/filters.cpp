@@ -112,3 +112,19 @@ void brightness(ppm& img, float brillo)
 	}
 	
 }
+
+void crop(ppm& img, int filas, int columnas)
+{
+	int r;
+	int g;
+	int b;
+
+	ppm nuevaImg = ppm(img.height - filas, img.width - columnas);
+	for(int i = filas; i < img.height; i++)
+	{
+		for(int j = columnas; j < img.width; j++)
+		{
+			nuevaImg.setPixel(i - filas,j - columnas, pixel(r,g,b));				
+		}
+	}
+}
