@@ -56,6 +56,8 @@ int main(int argc , char* argv[]){
 		brightness(imagen1, p1);
 	if (filter == "crop")
 		crop(imagen1, p1, p2);
+	if (filter == "boxblur")
+		boxBlur(imagen1);
    	clock_gettime(CLOCK_REALTIME, &stop);
 
 	double accum;

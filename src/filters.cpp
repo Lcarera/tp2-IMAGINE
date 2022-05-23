@@ -11,18 +11,13 @@
 
 using namespace std;
 
-// COMPLETAR :)
-unsigned char truncate_pixel(float color)
-{ 
-    return (color > 255) ? 255 : ((color < 0) ? 0: (unsigned char)color); 
-}
 // Filtro plano como ejemplo
 
 void plain(ppm& img, unsigned char c)
 {
 
-	for(int i = 0; i < img.height; i++)
-		for(int j = 0; j < img.width; j++)			
+	for(unsigned int i = 0; i < img.height; i++)
+		for(unsigned int j = 0; j < img.width; j++)			
 			img.setPixel(i, j, pixel(c,c,c));
 
 }
@@ -32,21 +27,23 @@ void shades(ppm& img, unsigned char shades)
 	float g;
 	float gPrima;
 	float rango = (255/int(shades)-1);
-	for(int i = 0; i < img.height; i++){
-		for(int j = 0; j < img.width; j++){
-			gPrima = (int)((img.getPixel(i,j).r + img.getPixel(i,j).g + img.getPixel(i,j).b )/ 3);
-			g = truncate_pixel((gPrima/rango)*rango);
-			img.setPixel(i, j, pixel(g,g,g));
+	pixel nuevoPixel = pixel();
+	for(unsigned int i = 0; i < img.height; i++){
+		for(unsigned int j = 0; j < img.width; j++){
+			gPrima = (img.getPixel(i,j).cumsum() )/ 3;
+			g = (gPrima/rango)*rango;
+			nuevoPixel.r = g;
+			nuevoPixel.g = g;
+			nuevoPixel.b = g;
+			img.setPixel(i, j, nuevoPixel.truncate());
 		}				
 	}
 }
 
 void merge(ppm& img1, ppm& img2, float alpha)
 {
-	
-	int r;
-	int g;
-	int b;
+	pixel pixelUno;
+	pixel pixelDos; 
 	try
 	{
 		float alpha2 = 1 - alpha;
@@ -55,19 +52,14 @@ void merge(ppm& img1, ppm& img2, float alpha)
 			throw "El porcentaje debe estar entre 0 y 1";
 		}
 		
-		for(int i = 0; i < img1.height; i++)
+		for(unsigned int i = 0; i < img1.height; i++)
 		{	
-		
-			for(int j = 0; j < img1.width; j++)
+			for(unsigned int j = 0; j < img1.width; j++)
 			{
-				img1.getPixel(i, j);
-				img2.getPixel(i,j);
-
-				r = truncate_pixel(img1.getPixel(i,j).r * alpha + img2.getPixel(i,j).r * alpha2);
-				g = truncate_pixel(img1.getPixel(i,j).g * alpha + img2.getPixel(i,j).g * alpha2);
-				b = truncate_pixel(img1.getPixel(i,j).b * alpha + img2.getPixel(i,j).b * alpha2);
-				img1.setPixel(i,j, pixel(r,g,b));
-				
+				pixelUno = img1.getPixel(i, j).mult(alpha);
+				pixelDos = img2.getPixel(i,j).mult(alpha2);
+				pixelUno.addp(pixelDos);
+				img1.setPixel(i,j, pixelUno.truncate());
 			}
 		}
 	}
@@ -81,10 +73,7 @@ void merge(ppm& img1, ppm& img2, float alpha)
 
 void brightness(ppm& img, float brillo)
 {
-	int r;
-	int g;
-	int b;
-
+	pixel pixelUno;
 	try
 	{
 		if (brillo > 1 || brillo < -1)
@@ -92,16 +81,13 @@ void brightness(ppm& img, float brillo)
 			throw "El brillo debe estar entre -1 y 1";
 		}
 
-		for(int i = 0; i < img.height; i++)
+		for(unsigned int i = 0; i < img.height; i++)
 		{
-			for(int j = 0; j < img.width; j++)
+			for(unsigned int j = 0; j < img.width; j++)
 			{
-				img.getPixel(i, j);
-
-				r = truncate_pixel(img.getPixel(i,j).r + 255 * brillo);
-				g = truncate_pixel(img.getPixel(i,j).g + 255 * brillo);
-				b = truncate_pixel(img.getPixel(i,j).b + 255 * brillo);
-				img.setPixel(i,j, pixel(r,g,b));
+				pixelUno = img.getPixel(i, j);
+				pixelUno.add(255 * brillo);
+				img.setPixel(i,j, pixelUno.truncate());
 				
 			}
 		}
@@ -127,4 +113,31 @@ void crop(ppm& img, int filas, int columnas)
 			nuevaImg.setPixel(i - filas,j - columnas, pixel(r,g,b));				
 		}
 	}
+}
+
+void boxBlur(ppm &img) {
+	ppm imagenNueva = ppm(img.width - 2, img.height - 2);
+	pixel resultado;
+	for (unsigned int i = 1; i < img.height - 1; i++)
+	{
+		for (unsigned int j = 1; j < img.width - 1; j++)
+		{
+			resultado = pixel();
+			resultado.addp(img.getPixel(i - 1, j - 1));
+			resultado.addp(img.getPixel(i - 1, j));
+			resultado.addp(img.getPixel(i - 1, j + 1));
+			resultado.addp(img.getPixel(i, j - 1));
+			resultado.addp(img.getPixel(i, j));
+			resultado.addp(img.getPixel(i, j + 1));
+			resultado.addp(img.getPixel(i + 1, j - 1));
+			resultado.addp(img.getPixel(i + 1, j));
+			resultado.addp(img.getPixel(i + 1, j + 1));
+			resultado.r = resultado.r / 9;
+			resultado.g = resultado.g / 9;
+			resultado.b = resultado.b / 9;
+
+			imagenNueva.setPixel(i - 1, j - 1, resultado.truncate());
+		}
+	}
+	img = imagenNueva;
 }
