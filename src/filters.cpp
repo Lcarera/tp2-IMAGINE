@@ -100,19 +100,19 @@ void brightness(ppm& img, float brillo)
 }
 
 void crop(ppm& img, int filas, int columnas)
-{
-	int r;
-	int g;
-	int b;
-
-	ppm nuevaImg = ppm(img.height - filas, img.width - columnas);
+{ 	
+	pixel nuevoPixel;
+	ppm nuevaImg = ppm(img.width - columnas, img.height - filas);
 	for(int i = filas; i < img.height; i++)
 	{
 		for(int j = columnas; j < img.width; j++)
 		{
-			nuevaImg.setPixel(i - filas,j - columnas, pixel(r,g,b));				
+			nuevoPixel = img.getPixel(i,j);
+			nuevaImg.setPixel(i - filas,j - columnas, nuevoPixel.truncate());				
 		}
 	}
+
+	img = nuevaImg;
 }
 
 void boxBlur(ppm &img) {
@@ -140,4 +140,28 @@ void boxBlur(ppm &img) {
 		}
 	}
 	img = imagenNueva;
+}
+
+void zoom(ppm &img, /* ppm &img_zoomed, */ int n)
+{
+	pixel pixelNuevo;
+    ppm imagenZoomeada(img.width * n, img.height * n);
+	for (unsigned int i = 0; i < img.height; i++)
+	{
+		for (unsigned int j = 0; j < img.width; j++)
+		{
+			pixelNuevo = img.getPixel(i, j);
+
+			unsigned int resultadoAltura = (j + (j * (n - 1)));
+			unsigned int resultadoAncho = (i + (i * (n - 1)));
+			for (unsigned int arregloAltura = 0; arregloAltura < n; arregloAltura++)
+			{
+				for (unsigned int arregloAncho = 0; arregloAncho < n; arregloAncho++)
+				{
+					imagenZoomeada.setPixel(resultadoAncho + arregloAltura, resultadoAltura + arregloAncho, pixelNuevo);
+				}
+			}
+		}
+	}
+    img = imagenZoomeada;
 }

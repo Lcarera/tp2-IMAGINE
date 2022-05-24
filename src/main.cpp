@@ -41,7 +41,12 @@ int main(int argc , char* argv[]){
 	string img2(argv[7]);
 
 	ppm imagen1(img1);
-	ppm imagen2(img2);
+	ppm imagen2 = ppm();
+	if (img2.length() > 4) 
+	{
+		ppm imagen2(img2);
+	}	
+		
 	cout << "Aplicando filtros"<< endl;
 	struct timespec start, stop;    	
 	clock_gettime(CLOCK_REALTIME, &start);
@@ -58,6 +63,8 @@ int main(int argc , char* argv[]){
 		crop(imagen1, p1, p2);
 	if (filter == "boxblur")
 		boxBlur(imagen1);
+	if (filter == "zoom")
+		zoom(imagen1, p1);
    	clock_gettime(CLOCK_REALTIME, &stop);
 
 	double accum;
