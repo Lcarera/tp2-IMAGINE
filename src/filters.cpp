@@ -103,9 +103,9 @@ void crop(ppm& img, int filas, int columnas)
 { 	
 	pixel nuevoPixel;
 	ppm nuevaImg = ppm(img.width - columnas, img.height - filas);
-	for(int i = filas; i < img.height; i++)
+	for(unsigned int i = filas; i < img.height; i++)
 	{
-		for(int j = columnas; j < img.width; j++)
+		for(unsigned int j = columnas; j < img.width; j++)
 		{
 			nuevoPixel = img.getPixel(i,j);
 			nuevaImg.setPixel(i - filas,j - columnas, nuevoPixel.truncate());				
@@ -142,7 +142,7 @@ void boxBlur(ppm &img) {
 	img = imagenNueva;
 }
 
-void zoom(ppm &img, /* ppm &img_zoomed, */ int n)
+void zoom(ppm &img, int n)
 {
 	pixel pixelNuevo;
     ppm imagenZoomeada(img.width * n, img.height * n);
