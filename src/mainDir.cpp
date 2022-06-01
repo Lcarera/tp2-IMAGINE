@@ -29,6 +29,7 @@ int main(int argc , char* argv[]) {
 	unsigned int n = atoi(argv[2]);
 	float p1 = atof(argv[3]);
 	string folder(argv[4]);
+    folder = folder.substr(folder.length() - 1, 1) != "/" ? folder + "/": folder;
 	string out_dir = string(argv[5]);
 	float p2 = atof(argv[6]);
 
@@ -37,12 +38,9 @@ int main(int argc , char* argv[]) {
 	cout << "Aplicando filtros"<< endl;
 	struct timespec start, stop;    	
 	clock_gettime(CLOCK_REALTIME, &start);
-
     DIR *dir; struct dirent *diread;
-    char* charrFolder;
-    charrFolder = &folder[0];
-    vector<char *> files;
-    if ((dir = opendir(charrFolder)) != nullptr) {
+    vector<string> files;
+    if ((dir = opendir(folder.c_str())) != nullptr) {
         while ((diread = readdir(dir)) != nullptr) {
             files.push_back(diread->d_name);
         }
@@ -52,13 +50,13 @@ int main(int argc , char* argv[]) {
         return EXIT_FAILURE;
     }
     string out;
-    for (string file : files)
+    for (auto file : files)
     {
-        if (file.size() > 2) 
+        string esPpm;
+        esPpm = file.length() > 4 ? file.substr(file.length() - 4, 4): "";
+        if (esPpm == ".ppm") 
         {
-            cout <<folder + file << endl;
-            /* ppm imagen1(folder + file);
-            //cout << "abro" << endl;
+            ppm imagen1(folder + file);
             if (filter == "plain")
                 plain(imagen1, (unsigned char)p1);
             if (filter == "shades")
@@ -71,14 +69,12 @@ int main(int argc , char* argv[]) {
                 boxBlur(imagen1);
             if (filter == "zoom")
                 zoom(imagen1, p1);
-            out = out_dir + file;
-            cout << out << endl;
-            cout << "Escribiendo imagen" << endl;
+            out = out_dir + filter + "_" + file ;
+            cout << "Escribiendo imagen " << file << endl;
             imagen1.write(out);	
-            cout << "escribo" << endl;
                 
-            cout << "Listo" << endl; */
-        }	
+            cout << "Listo" << endl;
+        }
     }
 	
    	clock_gettime(CLOCK_REALTIME, &stop);
