@@ -4,9 +4,11 @@
 #include <vector>
 #include <time.h>
 #include "filters.h"
+#include "main.h"
 #include <thread>
 #include <unistd.h>
 #include <fstream>      // std::ofstream
+#include <sstream>
 #define ONE_OVER_BILLION 1E-9
 
 
@@ -34,14 +36,14 @@ int main(int argc , char* argv[]){
 	
 	string filter = string(argv[1]);
 	unsigned int n = atoi(argv[2]);
-	string p1 = atof(argv[3]);
+	string p1 = string(argv[3]);
 	string img1(argv[4]);
 	string out = string(argv[5]);
-	string p2 = atof(argv[6]);
+	string p2 = string(argv[6]);
 	string img2(argv[7]);
-	vector<string> filtros = separarDatosString(filter);
-	vector<float> listaPUno = separarDatosFloat(p1);
-	vector<float> listaPDos = separarDatosFloat(p2);
+	vector<string> filtros = separarDatos(filter);
+	vector<string> listaPUno = separarDatos(p1);
+	vector<string> listaPDos = separarDatos(p2);
 
 	ppm imagen1(img1);
 	ppm imagen2 = ppm();
@@ -55,7 +57,7 @@ int main(int argc , char* argv[]){
 	cout << "Aplicando filtros"<< endl;
 	struct timespec start, stop;    	
 	clock_gettime(CLOCK_REALTIME, &start);
-	aplicarFiltros(filtros, nthreads, p1, p2, img1, img2);
+	aplicarFiltros(filtros, n, listaPUno, listaPDos, imagen1, imagen1);
    	clock_gettime(CLOCK_REALTIME, &stop);
 
 	double accum;
@@ -69,59 +71,38 @@ int main(int argc , char* argv[]){
 	return 0;
 }
 
-vector<float> separarDatosFloat(string datos)
-{
-	//Recibe un string con multiples datos y los separa e ingresa a una lista
-	vector<float> datosSeparados;
-
-	unsigned int pos = 0;
-	string delimiter = " ";
-	string dato;
-	while ((pos = datos.find(delimiter)) != pos) {
-		dato = datos.substr(0, pos);
-		datosSeparados.push_back(atof(dato));
-		datos.erase(0, pos + delimiter.length());
-	}
-	datosSeparados.push_back(atof(dato));
-
-	return datosSeparados;
-}
-
-vector<string> separarDatosString(string datos)
+vector<string> separarDatos(string datos)
 {
 	//Recibe un string con multiples datos y los separa e ingresa a una lista
 	vector<string> datosSeparados;
-
-	unsigned int pos = 0;
-	string delimiter = " ";
-	string dato;
-	while ((pos = datos.find(delimiter)) != pos) {
-		dato = datos.substr(0, pos);
-		datosSeparados.push_back(dato);
-		datos.erase(0, pos + delimiter.length());
-	}
-	datosSeparados.push_back(dato);
+	const char delim = ' ';
+    stringstream ss(datos);
+    string s;
+    while (std::getline(ss, s, delim)) {
+        datosSeparados.push_back(s);
+    }
 
 	return datosSeparados;
 }
 
-void aplicarFiltros(vector<string> filtros, unsigned int nthreads, vector<float> p1, vector<float> p2, ppm& img1, ppm& img2)
+void aplicarFiltros(vector<string> filtros, unsigned int nthreads, vector<string> p1, vector<string> p2, ppm& primeraImagen, ppm& segundaImagen)
 {
 	for(int i = 0; i < filtros.size(); i++)
 	{
+		float variable = stof(p1[i]);
 		if (filtros[i] == "plain")
-			plain(img1, (unsigned char)p1[i]);
+			plain(primeraImagen, variable);
 		if (filtros[i] == "shades")
-			shades(img1, (unsigned char)p1[i]);
+			shades(primeraImagen, variable);
 		if (filtros[i] == "merge")
-			merge(img1, img2, p1[i]);
+			merge(primeraImagen, segundaImagen, variable);
 		if (filtros[i] == "brightness")
-			brightness(img1, p1[i]);
+			brightness(primeraImagen, variable);
 		if (filtros[i] == "crop")
-			crop(img1, p1[i], p2[i]);
+			crop(primeraImagen, variable, stof(p2[i]));
 		if (filtros[i] == "boxblur")
-			boxBlur(img1);
+			boxBlur(primeraImagen);
 		if (filtros[i] == "zoom")
-			zoom(img1, p1[i]);
+			zoom(primeraImagen, variable);
 	}
 }
