@@ -89,20 +89,21 @@ void aplicarFiltros(vector<string> filtros, unsigned int nthreads, vector<string
 {
 	for(int i = 0; i < filtros.size(); i++)
 	{
+		
 		float variable = stof(p1[i]);
 		if (filtros[i] == "plain")
-			plain(primeraImagen, variable);
+			plain(primeraImagen, variable, 0, primeraImagen.height + 1);
 		if (filtros[i] == "shades")
-			shades(primeraImagen, variable);
+			shades(primeraImagen, variable, 0, primeraImagen.height + 1);
 		if (filtros[i] == "merge")
-			merge(primeraImagen, segundaImagen, variable);
+			merge(primeraImagen, segundaImagen, variable, 0, primeraImagen.height + 1);
 		if (filtros[i] == "brightness")
-			brightness(primeraImagen, variable);
+			brightness(primeraImagen, variable, 0, primeraImagen.height + 1);
 		if (filtros[i] == "crop")
-			crop(primeraImagen, variable, stof(p2[i]));
+			crop(primeraImagen, variable, stof(p2[i]), 0, primeraImagen.height + 1);
 		if (filtros[i] == "boxblur")
-			boxBlur(primeraImagen);
+			boxBlur(primeraImagen, 0, primeraImagen.height + 1);
 		if (filtros[i] == "zoom")
-			zoom(primeraImagen, variable);
+			zoom(primeraImagen, variable, 0, primeraImagen.height + 1);
 	}
 }
