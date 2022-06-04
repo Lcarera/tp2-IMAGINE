@@ -34,37 +34,28 @@ int main(int argc , char* argv[]){
 	
 	string filter = string(argv[1]);
 	unsigned int n = atoi(argv[2]);
-	float p1 = atof(argv[3]);
+	string p1 = atof(argv[3]);
 	string img1(argv[4]);
 	string out = string(argv[5]);
-	float p2 = atof(argv[6]);
+	string p2 = atof(argv[6]);
 	string img2(argv[7]);
+	vector<string> filtros = separarDatosString(filter);
+	vector<float> listaPUno = separarDatosFloat(p1);
+	vector<float> listaPDos = separarDatosFloat(p2);
 
 	ppm imagen1(img1);
 	ppm imagen2 = ppm();
 	if (img2.length() > 4) 
 	{
 		ppm imagen2(img2);
-	}	
+		cout << "Se ingresaron dos imagenes"<< endl;
+	}
+	else{cout << "Se ingreso una imagen"<< endl;}
 		
 	cout << "Aplicando filtros"<< endl;
 	struct timespec start, stop;    	
 	clock_gettime(CLOCK_REALTIME, &start);
-
-	if (filter == "plain")
-		plain(imagen1, (unsigned char)p1);
-	if (filter == "shades")
-		shades(imagen1, (unsigned char)p1);
-	if (filter == "merge")
-		merge(imagen1, imagen2, p1);
-	if (filter == "brightness")
-		brightness(imagen1, p1);
-	if (filter == "crop")
-		crop(imagen1, p1, p2);
-	if (filter == "boxblur")
-		boxBlur(imagen1);
-	if (filter == "zoom")
-		zoom(imagen1, p1);
+	aplicarFiltros(filtros, nthreads, p1, p2, img1, img2);
    	clock_gettime(CLOCK_REALTIME, &stop);
 
 	double accum;
@@ -76,4 +67,61 @@ int main(int argc , char* argv[]){
 	    
 	cout << "Listo" << endl;
 	return 0;
+}
+
+vector<float> separarDatosFloat(string datos)
+{
+	//Recibe un string con multiples datos y los separa e ingresa a una lista
+	vector<float> datosSeparados;
+
+	unsigned int pos = 0;
+	string delimiter = " ";
+	string dato;
+	while ((pos = datos.find(delimiter)) != pos) {
+		dato = datos.substr(0, pos);
+		datosSeparados.push_back(atof(dato));
+		datos.erase(0, pos + delimiter.length());
+	}
+	datosSeparados.push_back(atof(dato));
+
+	return datosSeparados;
+}
+
+vector<string> separarDatosString(string datos)
+{
+	//Recibe un string con multiples datos y los separa e ingresa a una lista
+	vector<string> datosSeparados;
+
+	unsigned int pos = 0;
+	string delimiter = " ";
+	string dato;
+	while ((pos = datos.find(delimiter)) != pos) {
+		dato = datos.substr(0, pos);
+		datosSeparados.push_back(dato);
+		datos.erase(0, pos + delimiter.length());
+	}
+	datosSeparados.push_back(dato);
+
+	return datosSeparados;
+}
+
+void aplicarFiltros(vector<string> filtros, unsigned int nthreads, vector<float> p1, vector<float> p2, ppm& img1, ppm& img2)
+{
+	for(int i = 0; i < filtros.size(); i++)
+	{
+		if (filtros[i] == "plain")
+			plain(img1, (unsigned char)p1[i]);
+		if (filtros[i] == "shades")
+			shades(img1, (unsigned char)p1[i]);
+		if (filtros[i] == "merge")
+			merge(img1, img2, p1[i]);
+		if (filtros[i] == "brightness")
+			brightness(img1, p1[i]);
+		if (filtros[i] == "crop")
+			crop(img1, p1[i], p2[i]);
+		if (filtros[i] == "boxblur")
+			boxBlur(img1);
+		if (filtros[i] == "zoom")
+			zoom(img1, p1[i]);
+	}
 }
