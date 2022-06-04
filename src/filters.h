@@ -12,12 +12,12 @@
 // SINGLE-THREAD FILTERS
 
 void brightness(ppm& img, float brillo);
-void shades(ppm& img, unsigned char shades);
+void shades(ppm& img, float shades);
 void merge(ppm& img1, ppm& img2, float alpha);
 void boxBlur(ppm &img);
 void crop(ppm& img, int filas, int columnas);
 void zoom(ppm &img, /* ppm &img_zoomed, */ int n);
-void plain(ppm &img, unsigned char c);
+void plain(ppm &img, float c);
 
 // MULTI-THREAD FILTERS
 

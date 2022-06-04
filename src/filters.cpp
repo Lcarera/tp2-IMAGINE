@@ -13,7 +13,7 @@ using namespace std;
 
 // Filtro plano como ejemplo
 
-void plain(ppm& img, unsigned char c)
+void plain(ppm& img, float c)
 {
 
 	for(unsigned int i = 0; i < img.height; i++)
@@ -22,7 +22,7 @@ void plain(ppm& img, unsigned char c)
 
 }
 
-void shades(ppm& img, unsigned char shades)
+void shades(ppm& img, float shades)
 {
 	float g;
 	float gPrima;
