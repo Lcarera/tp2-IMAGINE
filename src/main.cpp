@@ -57,7 +57,7 @@ int main(int argc , char* argv[]){
 	cout << "Aplicando filtros"<< endl;
 	struct timespec start, stop;    	
 	clock_gettime(CLOCK_REALTIME, &start);
-	aplicarFiltros(filtros, n, listaPUno, listaPDos, imagen1, imagen1);
+	aplicarFiltros(filtros, n, listaPUno, listaPDos, imagen1, imagen2);
    	clock_gettime(CLOCK_REALTIME, &stop);
 
 	double accum;
@@ -85,25 +85,32 @@ vector<string> separarDatos(string datos)
 	return datosSeparados;
 }
 
-void aplicarFiltros(vector<string> filtros, unsigned int nthreads, vector<string> p1, vector<string> p2, ppm& primeraImagen, ppm& segundaImagen)
+void aplicarFiltros(vector<string> filtros, unsigned int nThreads, vector<string> p1, vector<string> p2, ppm& primeraImagen, ppm& segundaImagen)
 {
 	for(int i = 0; i < filtros.size(); i++)
-	{
+	{	
 		
-		float variable = stof(p1[i]);
-		if (filtros[i] == "plain")
-			plain(primeraImagen, variable, 0, primeraImagen.height + 1);
-		if (filtros[i] == "shades")
-			shades(primeraImagen, variable, 0, primeraImagen.height + 1);
-		if (filtros[i] == "merge")
-			merge(primeraImagen, segundaImagen, variable, 0, primeraImagen.height + 1);
-		if (filtros[i] == "brightness")
-			brightness(primeraImagen, variable, 0, primeraImagen.height + 1);
-		if (filtros[i] == "crop")
-			crop(primeraImagen, variable, stof(p2[i]), 0, primeraImagen.height + 1);
-		if (filtros[i] == "boxblur")
-			boxBlur(primeraImagen, 0, primeraImagen.height + 1);
-		if (filtros[i] == "zoom")
-			zoom(primeraImagen, variable, 0, primeraImagen.height + 1);
+		if (nThreads == 0 || nThreads == 1)
+		{
+			float variable = stof(p1[i]);
+			if (filtros[i] == "plain")
+				plain(primeraImagen, variable, 0, primeraImagen.height + 1);
+			if (filtros[i] == "shades")
+				shades(primeraImagen, variable, 0, primeraImagen.height + 1);
+			if (filtros[i] == "merge")
+				merge(primeraImagen, segundaImagen, variable, 0, primeraImagen.height + 1);
+			if (filtros[i] == "brightness")
+				brightness(primeraImagen, variable, 0, primeraImagen.height + 1);
+			if (filtros[i] == "crop")
+				crop(primeraImagen, variable, stof(p2[i]), 0, primeraImagen.height + 1);
+			if (filtros[i] == "boxblur")
+				boxBlur(primeraImagen, 0, primeraImagen.height + 1);
+			if (filtros[i] == "zoom")
+				zoom(primeraImagen, variable, 0, primeraImagen.height + 1);
+		}
+		else
+		{
+			filasPorThread(primeraImagen, nThreads, filtro[i]);
+		}
 	}
 }
