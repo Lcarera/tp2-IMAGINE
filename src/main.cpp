@@ -87,30 +87,57 @@ vector<string> separarDatos(string datos)
 
 void aplicarFiltros(vector<string> filtros, unsigned int nThreads, vector<string> p1, vector<string> p2, ppm& primeraImagen, ppm& segundaImagen)
 {
-	for(int i = 0; i < filtros.size(); i++)
+	for(unsigned int i = 0; i < filtros.size(); i++)
 	{	
-		
-		if (nThreads == 0 || nThreads == 1)
-		{
-			float variable = stof(p1[i]);
-			if (filtros[i] == "plain")
-				plain(primeraImagen, variable, 0, primeraImagen.height + 1);
-			if (filtros[i] == "shades")
-				shades(primeraImagen, variable, 0, primeraImagen.height + 1);
-			if (filtros[i] == "merge")
-				merge(primeraImagen, segundaImagen, variable, 0, primeraImagen.height + 1);
-			if (filtros[i] == "brightness")
-				brightness(primeraImagen, variable, 0, primeraImagen.height + 1);
-			if (filtros[i] == "crop")
-				crop(primeraImagen, variable, stof(p2[i]), 0, primeraImagen.height + 1);
-			if (filtros[i] == "boxblur")
-				boxBlur(primeraImagen, 0, primeraImagen.height + 1);
-			if (filtros[i] == "zoom")
-				zoom(primeraImagen, variable, 0, primeraImagen.height + 1);
-		}
-		else
-		{
-			filasPorThread(primeraImagen, nThreads, filtro[i]);
-		}
+		filasPorThread(filtros[i], nThreads,  stof(p1[i]) , stof(p2[i]), primeraImagen, segundaImagen);
 	}
+}
+
+void filasPorThread(string filtro, unsigned int nThreads,  float p1, float p2, ppm& primeraImagen, ppm& segundaImagen)
+{
+	unsigned int filasThread = (int)(primeraImagen.height/nThreads);
+	unsigned int filasExtra = primeraImagen.height - (filasThread * nThreads);
+
+	vector<thread> threads;
+	ppm imagenNueva = ppm();
+	if (filtro == "boxblur")
+		imagenNueva = ppm(primeraImagen.width - 2, primeraImagen.height - 2);
+	if (filtro == "crop")
+		imagenNueva = ppm(primeraImagen.width - p1, primeraImagen.height - p2);
+	if (filtro == "zoom")
+		imagenNueva = ppm(primeraImagen.width * p1, primeraImagen.height * p1);
+
+	for (unsigned int i = 0; i < nThreads; i++)
+	{
+		unsigned int comienzoAltura = i * filasThread;
+		unsigned int finalAltura = (i + 1) * filasThread;
+
+		if (i == nThreads - 1)
+		{
+			finalAltura += filasExtra;
+		}
+
+		if (filtro == "plain")
+			threads.push_back(thread(plain, ref(primeraImagen), p1, comienzoAltura, finalAltura));
+		if (filtro == "shades")
+			threads.push_back(thread(shades, ref(primeraImagen), p1, comienzoAltura, finalAltura));
+		if (filtro == "merge")
+			threads.push_back(thread(merge, ref(primeraImagen), ref(segundaImagen), p1, comienzoAltura, finalAltura));
+		if (filtro == "brightness")
+			threads.push_back(thread(brightness, ref(primeraImagen), p1, comienzoAltura, finalAltura));
+		if (filtro == "crop")
+			threads.push_back(thread(crop, ref(primeraImagen), ref(imagenNueva), p1, p2, comienzoAltura, finalAltura));
+		if (filtro == "boxblur")
+			threads.push_back(thread(boxBlur, ref(primeraImagen), ref(imagenNueva), comienzoAltura, finalAltura));
+		if (filtro == "zoom")
+			threads.push_back(thread(zoom, ref(primeraImagen), ref(imagenNueva), p1, comienzoAltura, finalAltura));
+
+		cout << "Thread: " << i << " Start: " << comienzoAltura << " End: " << finalAltura << endl;
+	}
+	for (unsigned int i = 0; i < nThreads; i++)
+	{
+		threads[i].join();
+	}
+	if (filtro == "boxblur" || filtro == "crop" ||  filtro == "zoom")
+		primeraImagen = imagenNueva;
 }
