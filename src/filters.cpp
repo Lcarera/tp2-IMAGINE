@@ -22,6 +22,35 @@ void plain(ppm& img, float c, unsigned int comienzoAltura, unsigned int finAltur
 
 }
 
+
+void filasPorThread(ppm& img, int nThreads, string filtro)
+{
+	int filas_thread = (int)(img.height/nThreads);
+	int filas_extra = img.height - (filas_thread * nThreads);
+
+	vector<thread> threads;
+
+	for (size_t i = 0; i < nThreads; i++)
+	{
+		int comienzoAltura = i * filas_thread;
+		int finalAltura = (i + 1) * filas_thread;
+
+		if (i == nThreads - 1)
+		{
+			finalAltura += filas_extra;
+		}
+
+		cout << "[T" << i << "JS:" << comienzoAltura << "E:" << finalAltura << endl;
+
+		threads.push_back(thread());
+	}
+	for (size_t i = 0; i < nThreads; i++)
+	{
+		threads[i].join();
+	}
+}
+
+
 void shades(ppm& img, float shades, unsigned int comienzoAltura, unsigned int finAltura)
 {
 	float g;
