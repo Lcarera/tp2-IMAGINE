@@ -11,7 +11,6 @@
 
 using namespace std;
 
-// Filtro plano como ejemplo
 
 void plain(ppm& img, float c, unsigned int comienzoAltura, unsigned int finAltura)
 {
@@ -21,35 +20,6 @@ void plain(ppm& img, float c, unsigned int comienzoAltura, unsigned int finAltur
 			img.setPixel(i, j, pixel(c,c,c));
 
 }
-
-
-void filasPorThread(ppm& img, int nThreads, string filtro)
-{
-	int filas_thread = (int)(img.height/nThreads);
-	int filas_extra = img.height - (filas_thread * nThreads);
-
-	vector<thread> threads;
-
-	for (size_t i = 0; i < nThreads; i++)
-	{
-		int comienzoAltura = i * filas_thread;
-		int finalAltura = (i + 1) * filas_thread;
-
-		if (i == nThreads - 1)
-		{
-			finalAltura += filas_extra;
-		}
-
-		cout << "[T" << i << "JS:" << comienzoAltura << "E:" << finalAltura << endl;
-
-		threads.push_back(thread());
-	}
-	for (size_t i = 0; i < nThreads; i++)
-	{
-		threads[i].join();
-	}
-}
-
 
 void shades(ppm& img, float shades, unsigned int comienzoAltura, unsigned int finAltura)
 {
@@ -128,10 +98,9 @@ void brightness(ppm& img, float brillo, unsigned int comienzoAltura, unsigned in
 	
 }
 
-void crop(ppm& img, int filas, int columnas, unsigned int comienzoAltura, unsigned int finAltura)
+void crop(ppm& img, ppm& nuevaImg, int filas, int columnas, unsigned int comienzoAltura, unsigned int finAltura)
 { 	
-	pixel nuevoPixel;
-	ppm nuevaImg = ppm(img.width - columnas, finAltura - filas);
+	pixel nuevoPixel;	
 	for(unsigned int i = filas; i < finAltura; i++)
 	{
 		for(unsigned int j = columnas; j < img.width; j++)
@@ -144,8 +113,8 @@ void crop(ppm& img, int filas, int columnas, unsigned int comienzoAltura, unsign
 	img = nuevaImg;
 }
 
-void boxBlur(ppm &img, unsigned int comienzoAltura, unsigned int finAltura) {
-	ppm imagenNueva = ppm(img.width - 2, finAltura - 2);
+void boxBlur(ppm &img, ppm& nuevaImg, unsigned int comienzoAltura, unsigned int finAltura) 
+{
 	pixel resultado;
 	for (unsigned int i = 1; i < finAltura - 1; i++)
 	{
@@ -165,16 +134,15 @@ void boxBlur(ppm &img, unsigned int comienzoAltura, unsigned int finAltura) {
 			resultado.g = resultado.g / 9;
 			resultado.b = resultado.b / 9;
 
-			imagenNueva.setPixel(i - 1, j - 1, resultado.truncate());
+			nuevaImg.setPixel(i - 1, j - 1, resultado.truncate());
 		}
 	}
-	img = imagenNueva;
+	/* img = nuevaImg; */
 }
 
-void zoom(ppm &img, int n, unsigned int comienzoAltura, unsigned int finAltura)
+void zoom(ppm &img, ppm& nuevaImg, int n, unsigned int comienzoAltura, unsigned int finAltura)
 {
 	pixel pixelNuevo;
-    ppm imagenZoomeada(img.width * n, finAltura * n);
 	for (unsigned int i = comienzoAltura; i < finAltura; i++)
 	{
 		for (unsigned int j = 0; j < img.width; j++)
@@ -187,10 +155,10 @@ void zoom(ppm &img, int n, unsigned int comienzoAltura, unsigned int finAltura)
 			{
 				for (unsigned int arregloAncho = 0; arregloAncho < n; arregloAncho++)
 				{
-					imagenZoomeada.setPixel(resultadoAncho + arregloAltura, resultadoAltura + arregloAncho, pixelNuevo);
+					nuevaImg.setPixel(resultadoAncho + arregloAltura, resultadoAltura + arregloAncho, pixelNuevo);
 				}
 			}
 		}
 	}
-    img = imagenZoomeada;
+    img = nuevaImg;
 }
