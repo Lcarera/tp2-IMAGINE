@@ -11,5 +11,6 @@
 
 vector<string> separarDatos(string datos);
 void aplicarFiltros(vector<string> filtros, unsigned int nthreads, vector<string> p1, vector<string> p2, ppm& img1, ppm& img2);
+void filasPorThread(ppm& img, int nThreads, string filtro);
 
 #endif
