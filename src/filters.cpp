@@ -11,24 +11,23 @@
 
 using namespace std;
 
-// Filtro plano como ejemplo
 
-void plain(ppm& img, unsigned char c)
+void plain(ppm& img, float c, unsigned int comienzoAltura, unsigned int finAltura)
 {
 
-	for(unsigned int i = 0; i < img.height; i++)
+	for(unsigned int i = comienzoAltura; i < finAltura; i++)
 		for(unsigned int j = 0; j < img.width; j++)			
 			img.setPixel(i, j, pixel(c,c,c));
 
 }
 
-void shades(ppm& img, unsigned char shades)
+void shades(ppm& img, float shades, unsigned int comienzoAltura, unsigned int finAltura)
 {
 	float g;
 	float gPrima;
 	float rango = (255/int(shades)-1);
 	pixel nuevoPixel = pixel();
-	for(unsigned int i = 0; i < img.height; i++){
+	for(unsigned int i = comienzoAltura; i < finAltura; i++){
 		for(unsigned int j = 0; j < img.width; j++){
 			gPrima = (img.getPixel(i,j).cumsum() )/ 3;
 			g = (gPrima/rango)*rango;
@@ -40,7 +39,7 @@ void shades(ppm& img, unsigned char shades)
 	}
 }
 
-void merge(ppm& img1, ppm& img2, float alpha)
+void merge(ppm& img1, ppm& img2, float alpha, unsigned int comienzoAltura, unsigned int finAltura)
 {
 	pixel pixelUno;
 	pixel pixelDos; 
@@ -52,7 +51,7 @@ void merge(ppm& img1, ppm& img2, float alpha)
 			throw "El porcentaje debe estar entre 0 y 1";
 		}
 		
-		for(unsigned int i = 0; i < img1.height; i++)
+		for(unsigned int i = comienzoAltura; i < finAltura; i++)
 		{	
 			for(unsigned int j = 0; j < img1.width; j++)
 			{
@@ -71,7 +70,7 @@ void merge(ppm& img1, ppm& img2, float alpha)
 			
 }
 
-void brightness(ppm& img, float brillo)
+void brightness(ppm& img, float brillo, unsigned int comienzoAltura, unsigned int finAltura)
 {
 	pixel pixelUno;
 	try
@@ -81,7 +80,7 @@ void brightness(ppm& img, float brillo)
 			throw "El brillo debe estar entre -1 y 1";
 		}
 
-		for(unsigned int i = 0; i < img.height; i++)
+		for(unsigned int i = comienzoAltura; i < finAltura; i++)
 		{
 			for(unsigned int j = 0; j < img.width; j++)
 			{
@@ -99,11 +98,10 @@ void brightness(ppm& img, float brillo)
 	
 }
 
-void crop(ppm& img, int filas, int columnas)
+void crop(ppm& img, ppm& nuevaImg, int filas, int columnas, unsigned int comienzoAltura, unsigned int finAltura)
 { 	
-	pixel nuevoPixel;
-	ppm nuevaImg = ppm(img.width - columnas, img.height - filas);
-	for(unsigned int i = filas; i < img.height; i++)
+	pixel nuevoPixel;	
+	for(unsigned int i = filas; i < finAltura; i++)
 	{
 		for(unsigned int j = columnas; j < img.width; j++)
 		{
@@ -115,10 +113,10 @@ void crop(ppm& img, int filas, int columnas)
 	img = nuevaImg;
 }
 
-void boxBlur(ppm &img) {
-	ppm imagenNueva = ppm(img.width - 2, img.height - 2);
+void boxBlur(ppm &img, ppm& nuevaImg, unsigned int comienzoAltura, unsigned int finAltura) 
+{
 	pixel resultado;
-	for (unsigned int i = 1; i < img.height - 1; i++)
+	for (unsigned int i = 1; i < finAltura - 1; i++)
 	{
 		for (unsigned int j = 1; j < img.width - 1; j++)
 		{
@@ -136,17 +134,16 @@ void boxBlur(ppm &img) {
 			resultado.g = resultado.g / 9;
 			resultado.b = resultado.b / 9;
 
-			imagenNueva.setPixel(i - 1, j - 1, resultado.truncate());
+			nuevaImg.setPixel(i - 1, j - 1, resultado.truncate());
 		}
 	}
-	img = imagenNueva;
+	/* img = nuevaImg; */
 }
 
-void zoom(ppm &img, int n)
+void zoom(ppm &img, ppm& nuevaImg, int n, unsigned int comienzoAltura, unsigned int finAltura)
 {
 	pixel pixelNuevo;
-    ppm imagenZoomeada(img.width * n, img.height * n);
-	for (unsigned int i = 0; i < img.height; i++)
+	for (unsigned int i = comienzoAltura; i < finAltura; i++)
 	{
 		for (unsigned int j = 0; j < img.width; j++)
 		{
@@ -158,10 +155,10 @@ void zoom(ppm &img, int n)
 			{
 				for (unsigned int arregloAncho = 0; arregloAncho < n; arregloAncho++)
 				{
-					imagenZoomeada.setPixel(resultadoAncho + arregloAltura, resultadoAltura + arregloAncho, pixelNuevo);
+					nuevaImg.setPixel(resultadoAncho + arregloAltura, resultadoAltura + arregloAncho, pixelNuevo);
 				}
 			}
 		}
 	}
-    img = imagenZoomeada;
+    img = nuevaImg;
 }
