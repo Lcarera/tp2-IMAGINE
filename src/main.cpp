@@ -44,10 +44,22 @@ int main(int argc , char* argv[]){
 	vector<string> filtros = separarDatos(filter);
 	vector<string> listaPUno = separarDatos(p1);
 	vector<string> listaPDos = separarDatos(p2);
+	string esPpm;
+	esPpm = img1.length() > 4 ? img1.substr(img1.length() - 4, 4): "";
+	ppm imagen1 = ppm();
+	if (esPpm == ".ppm")
+	{
+		ppm imagen1(img1);
+	}
+	else
+	{
+		cout << "Imagen no valida" << endl;
+	}
 
-	ppm imagen1(img1);
+	esPpm = "";
 	ppm imagen2 = ppm();
-	if (img2.length() > 4) 
+	esPpm = img2.length() > 4 ? img2.substr(img2.length() - 4, 4): "";
+	if (esPpm == ".ppm") 
 	{
 		ppm imagen2(img2);
 		cout << "Se ingresaron dos imagenes"<< endl;
