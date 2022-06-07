@@ -1,8 +1,8 @@
 .PHONY: all clean
 
-BIN = main
+BIN = mainDir
 
-CPP = main.cpp filters.cpp ppm.cpp helper.cpp
+CPP = ./mainDir.cpp ./filters.cpp ./ppm.cpp ./helper.cpp
 OBJ = $(CPP:.cpp=.o)
 SRC = $(CPP)
 
@@ -11,7 +11,7 @@ all: main
 clean:
 	rm -f $(BIN) $(OBJ)
 
-main: main.o filters.o ppm.o helper.o
+main: mainDir.o filters.o ppm.o helper.o
 	g++ -Wall -Wpedantic -g -pthread -o $@ $^
 
 %.o: %.cpp

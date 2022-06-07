@@ -110,7 +110,6 @@ void crop(ppm& img, ppm& nuevaImg, int filas, int columnas, unsigned int comienz
 		}
 	}
 
-	img = nuevaImg;
 }
 
 void boxBlur(ppm &img, ppm& nuevaImg, unsigned int comienzoAltura, unsigned int finAltura) 
@@ -137,7 +136,6 @@ void boxBlur(ppm &img, ppm& nuevaImg, unsigned int comienzoAltura, unsigned int 
 			nuevaImg.setPixel(i - 1, j - 1, resultado.truncate());
 		}
 	}
-	/* img = nuevaImg; */
 }
 
 void zoom(ppm &img, ppm& nuevaImg, int n, unsigned int comienzoAltura, unsigned int finAltura)
@@ -160,5 +158,4 @@ void zoom(ppm &img, ppm& nuevaImg, int n, unsigned int comienzoAltura, unsigned 
 			}
 		}
 	}
-    img = nuevaImg;
 }

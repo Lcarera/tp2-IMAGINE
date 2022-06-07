@@ -1,5 +1,5 @@
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef HELPER_H
+#define HELPER_H
 
 #include <iostream>
 #include <string>
