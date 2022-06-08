@@ -81,7 +81,6 @@ void filasPorThread(string filtro, unsigned int nThreads,  float p1, ppm& primer
 	}
 	if (filtro == "boxblur" || filtro == "crop" ||  filtro == "zoom")
 	{
-		/* primeraImagen = imagenNueva; */
-		imagenNueva.write("/home/mint/Downloads/tp2-IMAGINE/src/out/prueba.ppm");
+		primeraImagen = imagenNueva;
 	}
 }
