@@ -17,7 +17,7 @@ using namespace std;
 int main(int argc , char* argv[]) {
 
     if(string(argv[1]) == "-help"){
-		cout << "Uso: ./main <filtro> <nthreads> <[p1]> <dir> <out_dir> <[p2]> <img2>" << endl;
+		cout << "Uso: ./main <filtro> <nthreads> <[p1]> <dir> <out_dir> <img2>" << endl;
 		return 0; 
 	}
 	if(string(argv[1]) == "-filtros"){
@@ -33,11 +33,9 @@ int main(int argc , char* argv[]) {
 	string p1 = string(argv[3]);
 	string folder(argv[4]);
 	string out_dir = string(argv[5]);
-	string p2 = string(argv[6]);
     string img2(argv[7]);
 	vector<string> filtros = separarDatos(filter);
 	vector<string> listaPUno = separarDatos(p1);
-	vector<string> listaPDos = separarDatos(p2);
 
     ppm imagen2 = ppm();
     if (img2.length() > 4) 
@@ -68,7 +66,7 @@ int main(int argc , char* argv[]) {
         if (esPpm == ".ppm") 
         {
             ppm imagen1(folder + file);
-            aplicarFiltros(filtros, n, listaPUno, listaPDos, imagen1, imagen2);
+            aplicarFiltros(filtros, n, listaPUno, imagen1, imagen2);
             out = out_dir + filter + "_" + file ;
             cout << "Escribiendo imagen " << file << endl;
             imagen1.write(out);	

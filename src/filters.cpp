@@ -98,15 +98,15 @@ void brightness(ppm& img, float brillo, unsigned int comienzoAltura, unsigned in
 	
 }
 
-void crop(ppm& img, ppm& nuevaImg, int filas, int columnas, unsigned int comienzoAltura, unsigned int finAltura)
+void crop(ppm& img, ppm& nuevaImg, int recorte, unsigned int comienzoAltura, unsigned int finAltura)
 { 	
 	pixel nuevoPixel;	
-	for(unsigned int i = filas; i < finAltura; i++)
+	for(unsigned int i = recorte; i < finAltura; i++)
 	{
-		for(unsigned int j = columnas; j < img.width; j++)
+		for(unsigned int j = recorte; j < img.width; j++)
 		{
 			nuevoPixel = img.getPixel(i,j);
-			nuevaImg.setPixel(i - filas,j - columnas, nuevoPixel.truncate());				
+			nuevaImg.setPixel(i - recorte,j - recorte, nuevoPixel.truncate());				
 		}
 	}
 

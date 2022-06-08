@@ -27,15 +27,15 @@ vector<string> separarDatos(string datos)
 	return datosSeparados;
 }
 
-void aplicarFiltros(vector<string> filtros, unsigned int nThreads, vector<string> p1, vector<string> p2, ppm& primeraImagen, ppm& segundaImagen)
+void aplicarFiltros(vector<string> filtros, unsigned int nThreads, vector<string> p1, ppm& primeraImagen, ppm& segundaImagen)
 {
 	for(unsigned int i = 0; i < filtros.size(); i++)
 	{	
-		filasPorThread(filtros[i], nThreads,  stof(p1[i]) , stof(p2[i]), primeraImagen, segundaImagen);
+		filasPorThread(filtros[i], nThreads,  stof(p1[i]), primeraImagen, segundaImagen);
 	}
 }
 
-void filasPorThread(string filtro, unsigned int nThreads,  float p1, float p2, ppm& primeraImagen, ppm& segundaImagen)
+void filasPorThread(string filtro, unsigned int nThreads,  float p1, ppm& primeraImagen, ppm& segundaImagen)
 {
 	unsigned int filasThread = (int)(primeraImagen.height/nThreads);
 	unsigned int filasExtra = primeraImagen.height - (filasThread * nThreads);
@@ -44,7 +44,7 @@ void filasPorThread(string filtro, unsigned int nThreads,  float p1, float p2, p
 	if (filtro == "boxblur")
 		imagenNueva = ppm(primeraImagen.width - 2, primeraImagen.height - 2);
 	if (filtro == "crop")
-		imagenNueva = ppm(primeraImagen.width - p1, primeraImagen.height - p2);
+		imagenNueva = ppm(primeraImagen.width - p1, primeraImagen.height - p1);
 	if (filtro == "zoom")
 		imagenNueva = ppm(primeraImagen.width * p1, primeraImagen.height * p1);
 
@@ -67,7 +67,7 @@ void filasPorThread(string filtro, unsigned int nThreads,  float p1, float p2, p
 		if (filtro == "brightness")
 			threads.push_back(thread(brightness, ref(primeraImagen), p1, comienzoAltura, finalAltura));
 		if (filtro == "crop")
-			threads.push_back(thread(crop, ref(primeraImagen), ref(imagenNueva), p1, p2, comienzoAltura, finalAltura));
+			threads.push_back(thread(crop, ref(primeraImagen), ref(imagenNueva), p1, comienzoAltura, finalAltura));
 		if (filtro == "boxblur")
 			threads.push_back(thread(boxBlur, ref(primeraImagen), ref(imagenNueva), comienzoAltura, finalAltura));
 		if (filtro == "zoom")
@@ -81,6 +81,7 @@ void filasPorThread(string filtro, unsigned int nThreads,  float p1, float p2, p
 	}
 	if (filtro == "boxblur" || filtro == "crop" ||  filtro == "zoom")
 	{
-		primeraImagen = imagenNueva;
+		/* primeraImagen = imagenNueva; */
+		imagenNueva.write("/home/mint/Downloads/tp2-IMAGINE/src/out/prueba.ppm");
 	}
 }

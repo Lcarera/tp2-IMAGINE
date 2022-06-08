@@ -22,7 +22,7 @@ int main(int argc , char* argv[]){
 	// Asumimos que Zoom no se puede encadenar
 
 	if(string(argv[1]) == "-help"){
-		cout << "Uso: ./main <filtro> <nthreads> <[p1]> <img1> <custom_output> <[p2]> <img2>" << endl;
+		cout << "Uso: ./main <filtro> <nthreads> <[p1]> <img1> <custom_output> <img2>" << endl;
 		return 0; 
 	}
 	if(string(argv[1]) == "-filtros"){
@@ -33,24 +33,21 @@ int main(int argc , char* argv[]){
 		cout << "crop" << endl;
 		cout << "zoom" << endl;
 	}
-	
 	string filter = string(argv[1]);
 	unsigned int n = atoi(argv[2]);
 	string p1 = string(argv[3]);
 	string img1(argv[4]);
 	string out = string(argv[5]);
-	string p2 = string(argv[6]);
-	string img2(argv[7]);
+	string img2(argv[6]);
 	vector<string> filtros = separarDatos(filter);
 	vector<string> listaPUno = separarDatos(p1);
-	vector<string> listaPDos = separarDatos(p2);
 	ppm imagen1(img1);
 	ppm imagen2(img2);
 		
 	cout << "Aplicando filtros"<< endl;
 	struct timespec start, stop;    	
 	clock_gettime(CLOCK_REALTIME, &start);
-	aplicarFiltros(filtros, n, listaPUno, listaPDos, imagen1, imagen2);
+	aplicarFiltros(filtros, n, listaPUno, imagen1, imagen2);
    	clock_gettime(CLOCK_REALTIME, &stop);
 
 	double accum;
