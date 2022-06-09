@@ -15,7 +15,6 @@
 using namespace std;
 
 // El siguiente es un template basico que pueden usar como base
-
 int main(int argc , char* argv[]){
 	
 	// Asumimos que los filtros sin p1 se escriben primero (por lo tanto, el primer p1 es no nulo)
@@ -58,5 +57,13 @@ int main(int argc , char* argv[]){
 	imagen1.write(out);	
 	    
 	cout << "Listo" << endl;
+
+	ofstream file;
+	file.open("../pruebas/resultados.csv", ios::app);
+	string outPrueba = to_string(imagen1.width) + "," + to_string(accum) + "," + to_string(n) + "\n";
+	cout << "Printeando esto: " << outPrueba;
+	file << outPrueba;
+	file.close();
 	return 0;
 }
+
