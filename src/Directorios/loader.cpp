@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <vector>
 #include <time.h>
-#include "./filters.h"
-#include "./helper.h"
+#include "../filters.h"
+#include "../helper.h"
 #include <thread>
 #include <unistd.h>
 #include <fstream>      // std::ofstream
@@ -17,7 +17,7 @@ using namespace std;
 int main(int argc , char* argv[]) {
 
     if(string(argv[1]) == "-help"){
-		cout << "Uso: ./main <filtro> <nthreads> <[p1]> <dir> <out_dir> <img2>" << endl;
+		cout << "Uso: ./loader <filtro> <nthreads> <[p1]> <dir> <out_dir> <img2>" << endl;
 		return 0; 
 	}
 	if(string(argv[1]) == "-filtros"){
@@ -26,14 +26,13 @@ int main(int argc , char* argv[]) {
 		cout << "boxblur" << endl;
 		cout << "crop" << endl;
 		cout << "zoom" << endl;
-        cout << "merge" << endl;
 	}
     string filter = string(argv[1]);
 	unsigned int n = atoi(argv[2]);
 	string p1 = string(argv[3]);
 	string folder(argv[4]);
 	string out_dir = string(argv[5]);
-    string img2(argv[7]);
+    string img2(argv[6]);
 	vector<string> filtros = separarDatos(filter);
 	vector<string> listaPUno = separarDatos(p1);
 
@@ -64,10 +63,13 @@ int main(int argc , char* argv[]) {
         string esPpm;
         esPpm = file.length() > 4 ? file.substr(file.length() - 4, 4): "";
         if (esPpm == ".ppm") 
-        {
+        {   
             ppm imagen1(folder + file);
+            string filtrosUsados;
             aplicarFiltros(filtros, n, listaPUno, imagen1, imagen2);
-            out = out_dir + filter + "_" + file ;
+            for(unsigned int i = 0; i < filtros.size(); i++)
+                filtrosUsados = filtrosUsados + filtros[i] + "_";
+            out = out_dir + filtrosUsados + file ;
             cout << "Escribiendo imagen " << file << endl;
             imagen1.write(out);	
                 
