@@ -59,7 +59,7 @@ int main(int argc , char* argv[]) {
     struct timespec start, stop;    	
 	clock_gettime(CLOCK_REALTIME, &start);
     string out;
-    int widthTotal;
+    int widthTotal = 0;
     for (auto file : files)
     {   
         string esPpm;
