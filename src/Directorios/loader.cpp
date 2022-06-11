@@ -44,8 +44,7 @@ int main(int argc , char* argv[]) {
 	
 		
 	cout << "Aplicando filtros"<< endl;
-	struct timespec start, stop;    	
-	clock_gettime(CLOCK_REALTIME, &start);
+	
     DIR *dir; struct dirent *diread;
     vector<string> files;
     if ((dir = opendir(folder.c_str())) != nullptr) {
@@ -63,7 +62,8 @@ int main(int argc , char* argv[]) {
         string esPpm;
         esPpm = file.length() > 4 ? file.substr(file.length() - 4, 4): "";
         if (esPpm == ".ppm") 
-        {   
+        {   struct timespec start, stop;    	
+	        clock_gettime(CLOCK_REALTIME, &start);
             ppm imagen1(folder + file);
             string filtrosUsados;
             aplicarFiltros(filtros, n, listaPUno, imagen1, imagen2);
@@ -72,17 +72,19 @@ int main(int argc , char* argv[]) {
             out = out_dir + filtrosUsados + file ;
             cout << "Escribiendo imagen " << file << endl;
             imagen1.write(out);	
-                
+            clock_gettime(CLOCK_REALTIME, &stop);
+            double accum;
+            accum = ( stop.tv_sec - start.tv_sec ) + ( stop.tv_nsec - start.tv_nsec ) * ONE_OVER_BILLION;
+            printf("%lf s\n", accum);
+            ofstream file;
+            file.open("pruebas/resultados.csv", ios::app);
+            string outPrueba = to_string(imagen1.width) + "," + to_string(accum) + "," + to_string(n) + "\n";
+            cout << "Printeando esto: " << outPrueba;
+            file << outPrueba;
+            file.close();
             cout << "Listo" << endl;
         }
     }
-	
-   	clock_gettime(CLOCK_REALTIME, &stop);
-
-	double accum;
-	accum = ( stop.tv_sec - start.tv_sec ) + ( stop.tv_nsec - start.tv_nsec ) * ONE_OVER_BILLION;
-	printf("%lf s\n", accum);
-
 	
 	return 0;
  
