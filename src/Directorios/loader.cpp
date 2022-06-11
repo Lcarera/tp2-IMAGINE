@@ -56,35 +56,41 @@ int main(int argc , char* argv[]) {
         perror ("opendir");
         return EXIT_FAILURE;
     }
+    struct timespec start, stop;    	
+	clock_gettime(CLOCK_REALTIME, &start);
     string out;
+    int widthTotal;
     for (auto file : files)
-    {
+    {   
         string esPpm;
         esPpm = file.length() > 4 ? file.substr(file.length() - 4, 4): "";
         if (esPpm == ".ppm") 
-        {   struct timespec start, stop;    	
-	        clock_gettime(CLOCK_REALTIME, &start);
+        {   
             ppm imagen1(folder + file);
             string filtrosUsados;
             aplicarFiltros(filtros, n, listaPUno, imagen1, imagen2);
+            widthTotal += imagen1.width;
             for(unsigned int i = 0; i < filtros.size(); i++)
                 filtrosUsados = filtrosUsados + filtros[i] + "_";
             out = out_dir + filtrosUsados + file ;
             cout << "Escribiendo imagen " << file << endl;
             imagen1.write(out);	
-            clock_gettime(CLOCK_REALTIME, &stop);
-            double accum;
-            accum = ( stop.tv_sec - start.tv_sec ) + ( stop.tv_nsec - start.tv_nsec ) * ONE_OVER_BILLION;
-            printf("%lf s\n", accum);
-            ofstream file;
-            file.open("pruebas/resultados.csv", ios::app);
-            string outPrueba = to_string(imagen1.width) + "," + to_string(accum) + "," + to_string(n) + "\n";
-            cout << "Printeando esto: " << outPrueba;
-            file << outPrueba;
-            file.close();
-            cout << "Listo" << endl;
+            
         }
     }
+
+    
+    clock_gettime(CLOCK_REALTIME, &stop);
+    double accum;
+    accum = ( stop.tv_sec - start.tv_sec ) + ( stop.tv_nsec - start.tv_nsec ) * ONE_OVER_BILLION;
+    printf("%lf s\n", accum);
+    ofstream file;
+    file.open("pruebas/resultados.csv", ios::app);
+    string outPrueba = to_string(widthTotal) + "," + to_string(accum) + "," + to_string(n) + "\n";
+    cout << "Printeando esto: " << outPrueba;
+    file << outPrueba;
+    file.close();
+    cout << "Listo" << endl;
 	
 	return 0;
  
