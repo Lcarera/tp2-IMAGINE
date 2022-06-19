@@ -25,7 +25,7 @@ void shades(ppm& img, float shades, unsigned int comienzoAltura, unsigned int fi
 {
 	float g;
 	float gPrima;
-	float rango = (255/int(shades)-1);
+	float rango = (255/(int(shades)-1));
 	pixel nuevoPixel = pixel();
 	for(unsigned int i = comienzoAltura; i < finAltura; i++){
 		for(unsigned int j = 0; j < img.width; j++){
