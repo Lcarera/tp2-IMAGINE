@@ -1,43 +1,43 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
-#include <math.h>       /* sqrt */
+#include <math.h> /* sqrt */
 #include <vector>
 #include "filters.h"
 #include "helper.h"
-#include <thread>  
-#include <atomic>  
+#include <thread>
+#include <atomic>
 #include <sstream>
 #define BLACK 0
 
 using namespace std;
 
-
 vector<string> separarDatos(string datos)
 {
-	//Recibe un string con multiples datos y los separa e ingresa a una lista
+	// Recibe un string con multiples datos y los separa e ingresa a una lista
 	vector<string> datosSeparados;
 	const char delim = ' ';
-    stringstream ss(datos);
-    string s;
-    while (std::getline(ss, s, delim)) {
-        datosSeparados.push_back(s);
-    }
+	stringstream ss(datos);
+	string s;
+	while (std::getline(ss, s, delim))
+	{
+		datosSeparados.push_back(s);
+	}
 
 	return datosSeparados;
 }
 
-void aplicarFiltros(vector<string> filtros, unsigned int nThreads, vector<string> p1, ppm& primeraImagen, ppm& segundaImagen)
+void aplicarFiltros(vector<string> filtros, unsigned int nThreads, vector<string> p1, ppm &primeraImagen, ppm &segundaImagen)
 {
-	for(unsigned int i = 0; i < filtros.size(); i++)
-	{	
-		filasPorThread(filtros[i], nThreads,  stof(p1[i]), primeraImagen, segundaImagen);
+	for (unsigned int i = 0; i < filtros.size(); i++)
+	{
+		filasPorThread(filtros[i], nThreads, stof(p1[i]), primeraImagen, segundaImagen);
 	}
 }
 
-void filasPorThread(string filtro, unsigned int nThreads,  float p1, ppm& primeraImagen, ppm& segundaImagen)
+void filasPorThread(string filtro, unsigned int nThreads, float p1, ppm &primeraImagen, ppm &segundaImagen)
 {
-	unsigned int filasThread = (int)(primeraImagen.height/nThreads);
+	unsigned int filasThread = (int)(primeraImagen.height / nThreads);
 	unsigned int filasExtra = primeraImagen.height - (filasThread * nThreads);
 	vector<thread> threads;
 	ppm imagenNueva = ppm();
@@ -79,7 +79,7 @@ void filasPorThread(string filtro, unsigned int nThreads,  float p1, ppm& primer
 	{
 		threads[i].join();
 	}
-	if (filtro == "boxblur" || filtro == "crop" ||  filtro == "zoom")
+	if (filtro == "boxblur" || filtro == "crop" || filtro == "zoom")
 	{
 		primeraImagen = imagenNueva;
 	}
